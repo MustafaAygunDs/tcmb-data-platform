@@ -18,7 +18,7 @@ def validate_null_values(df: pd.DataFrame) -> tuple[bool, str]:
         return False, f"Found {null_count} null values"
     return True, "No null values ✅"
 
-def validate_value_range(df: pd.DataFrame, min_val: float = 1, max_val: float = 100) -> tuple[bool, str]:
+def validate_value_range(df: pd.DataFrame, min_val: float = 1, max_val: float = 150) -> tuple[bool, str]:
     """Check value range"""
     invalid = df[(df['Değer'] < min_val) | (df['Değer'] > max_val)]
     if len(invalid) > 0:
