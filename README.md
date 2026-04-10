@@ -55,6 +55,7 @@ docker exec postgres psql -U postgres -d tcmb_dev
 ```
 
 ## 🏗️ Architecture
+```
 Exchange Rate API (exchangerate-api.com)
 ↓
 EXTRACT PHASE
@@ -78,7 +79,9 @@ VALIDATE PHASE
 • 100% score
 • Monitoring
 
+```
 ## 📁 Project Structure
+```
 tcmb-data-platform/
 ├── dags/
 │   └── tcmb_extract_dag.py        # Airflow orchestration
@@ -98,6 +101,7 @@ tcmb-data-platform/
 ├── .gitignore                     # Git rules
 └── README.md                      # This file
 
+```
 ## 🛠️ Tech Stack
 
 | Component | Technology | Version | Purpose |
@@ -164,6 +168,7 @@ tcmb-data-platform/
 **Result:** 100.0% Quality Score (5/5 checks passed)
 
 ## 🔄 Airflow DAG
+```
 tcmb_extract_dag:
 ├── Schedule: @daily (24:00)
 ├── Owner: data-engineering
@@ -175,6 +180,7 @@ tcmb_extract_dag:
 Dependencies:
 [extract_usd_try, extract_eur_try, extract_cpi] >> transform_and_validate >> log_completion
 
+```
 ## 📊 Real-Time Data
 
 **Current Exchange Rates (Live API):**
