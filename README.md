@@ -1,6 +1,5 @@
 # Turkish Macroeconomic Data Platform (TCMB)
 
-**⚡ Production-Ready ETL Pipeline | Built in 24 Hours**
 
 Enterprise-grade data pipeline for Turkish Central Bank (TCMB) macroeconomic data using Apache Airflow, AWS, and PostgreSQL.
 
