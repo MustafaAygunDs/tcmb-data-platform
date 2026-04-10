@@ -20,6 +20,7 @@ Real-time macroeconomic data processing platform leveraging live exchange rate A
 - Git
 
 ### Installation
+
 ```bash
 # Clone repository
 git clone https://github.com/MustafaAygunDs/tcmb-data-platform.git
@@ -38,6 +39,7 @@ cp .env.example .env
 ```
 
 ### Run Pipeline
+
 ```bash
 # Start Docker containers (Airflow + PostgreSQL)
 docker-compose up -d
@@ -53,43 +55,30 @@ docker exec postgres psql -U postgres -d tcmb_dev
 ```
 
 ## 🏗️ Architecture
-
-┌─────────────────────────┐
-│  Exchange Rate API      │
-│  (exchangerate-api.com) │
-└────────────┬────────────┘
-│
-┌────────▼────────┐
-│ EXTRACT         │
-│ - Fetch rates   │
-│ - 3 series      │
-│ - Real + mock   │
-└────────┬────────┘
-│
-┌────────▼──────────────┐
-│ TRANSFORM             │
-│ - Clean data          │
-│ - SMA-7 indicator     │
-│ - Volatility calc     │
-│ - Weekly aggregation  │
-└────────┬──────────────┘
-│
-┌────────▼────────┐
-│ LOAD            │
-│ PostgreSQL      │
-│ - Staging layer │
-│ - Mart layer    │
-└────────┬────────┘
-│
-┌────────▼──────────────┐
-│ VALIDATE              │
-│ - Quality checks (5)  │
-│ - 100% score          │
-│ - Monitoring          │
-└───────────────────────┘
+Exchange Rate API (exchangerate-api.com)
+↓
+EXTRACT PHASE
+• Fetch rates
+• 3 series
+• Real + fallback
+↓
+TRANSFORM PHASE
+• Clean data
+• SMA-7 indicator
+• Volatility calculation
+• Weekly aggregation
+↓
+LOAD PHASE
+• PostgreSQL
+• Staging layer
+• Mart layer
+↓
+VALIDATE PHASE
+• 5 quality checks
+• 100% score
+• Monitoring
 
 ## 📁 Project Structure
-
 tcmb-data-platform/
 ├── dags/
 │   └── tcmb_extract_dag.py        # Airflow orchestration
@@ -135,47 +124,46 @@ tcmb-data-platform/
 
 ### Transform Phase
 
-Data cleaning:
+**Data cleaning:**
 - Remove null values
 - Handle duplicates
 - Validate date sequences
 
-Feature engineering:
+**Feature engineering:**
 - SMA-7 (7-day moving average)
 - Volatility (7-day standard deviation)
 - Time-series aggregation
 
-Aggregation:
+**Aggregation:**
 - Daily to Weekly conversion
 - Open, High, Low, Close (OHLC) prices
 - Weekly volatility metrics
 
 ### Load Phase
 
-Staging Layer:
+**Staging Layer:**
 - staging.stg_exchange_rates (raw data)
 
-Dimensional Model:
+**Dimensional Model:**
 - marts.dim_date (date dimension)
 - marts.dim_series (series dimension)
 - marts.fact_exchange_rates (fact table)
 
-Monitoring:
+**Monitoring:**
 - monitoring.data_quality_checks (validation results)
 
 ### Validate Phase
 
-5 Quality Checks:
+**5 Quality Checks:**
 - ✅ No null dates
 - ✅ No null values
 - ✅ Valid range validation (1-150)
 - ✅ Sequential dates verification
 - ✅ Duplicate detection
 
-Result: 100.0% Quality Score (5/5 checks passed)
+**Result:** 100.0% Quality Score (5/5 checks passed)
 
 ## 🔄 Airflow DAG
-
 tcmb_extract_dag:
 ├── Schedule: @daily (24:00)
 ├── Owner: data-engineering
@@ -184,14 +172,16 @@ tcmb_extract_dag:
 ├── extract_usd_try ──┐
 ├── extract_eur_try ──┼──> transform_and_validate ──> log_completion
 └── extract_cpi ──────┘
+Dependencies:
+[extract_usd_try, extract_eur_try, extract_cpi] >> transform_and_validate >> log_completion
 
 ## 📊 Real-Time Data
 
-Current Exchange Rates (Live API):
+**Current Exchange Rates (Live API):**
 - USD/TRY: 44.58
 - EUR/TRY: 38.61
 
-Data Quality Metrics:
+**Data Quality Metrics:**
 - Min: 44.58 | Max: 44.95 | Mean: 44.77
 - Null records: 0
 - Duplicates: 0
@@ -216,13 +206,13 @@ Data Quality Metrics:
 
 ## 📈 Performance
 
-Execution Time:
+**Execution Time:**
 - Extract: ~2 seconds (38 records)
 - Transform: ~1 second (cleaning + indicators)
 - Load: ~0.5 seconds (PostgreSQL insert)
 - Validate: ~0.5 seconds (5 quality checks)
 
-Total: ~4 seconds (end-to-end)
+**Total:** ~4 seconds (end-to-end)
 
 ## 🎓 Learning Outcomes
 
@@ -238,6 +228,7 @@ Total: ~4 seconds (end-to-end)
 - Professional documentation
 
 ## 🔄 Development Workflow
+
 ```bash
 # Create feature branch
 git checkout -b feature/new-feature
@@ -290,7 +281,7 @@ MIT License - See LICENSE file for details
 **Mustafa Aygün**
 - GitHub: [@MustafaAygunDs](https://github.com/MustafaAygunDs)
 - Email: mustafaaygunds@gmail.com
-- Title: Data Engineer / IoT Specialist
+- Title: Data Engineer
 
 ## 📞 Support
 
@@ -302,6 +293,6 @@ For questions or issues:
 ---
 
 **Status:** Production Ready ✅
-**Last Updated:** 2026-04-07
+**Last Updated:** 2026-04-10
 **Version:** 1.0.0
 **Quality Score:** 100.0%
