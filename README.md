@@ -204,7 +204,7 @@ Dependencies:
 ## 🚨 Error Handling
 
 - Try-except blocks for API calls
-- Fallback to mock data on API failure
+- Automatic failover to exchangerate-api.com when primary TCMB API is unavailable
 - Comprehensive logging
 - Database transaction rollback
 - Email alerts (future enhancement)
@@ -218,6 +218,15 @@ Dependencies:
 - Validate: ~0.5 seconds (5 quality checks)
 
 **Total:** ~4 seconds (end-to-end)
+
+
+## 🔧 Challenges & Solutions
+
+**TCMB API Authentication Failure**
+Initial integration with TCMB EVDS API returned empty responses, causing `JSONDecodeError: Expecting value` on `response.json()`. Root cause was an invalid API key format. Resolved by switching the primary data source to exchangerate-api.com with the TCMB API retained as a future integration target when institutional access is available.
+
+**TÜFE Validation Range Bug**
+Data quality score for the TÜFE (CPI) series was 80% despite clean data. Root cause: `validate_value_range()` had a hardcoded `max_val=100`, but current TÜFE index values are in the 110–150 range. Fixed by updating the range to `max_val=150`, restoring 100% quality score across all 3 series.
 
 ## 🎓 Learning Outcomes
 
@@ -253,29 +262,10 @@ git push origin feature/new-feature
 
 ## 🚀 Future Enhancements
 
-- [ ] AWS RDS production deployment
-- [ ] S3 data lake integration
-- [ ] Real TCMB API integration (when available)
-- [ ] Advanced ML analytics (forecasting)
-- [ ] Web dashboard (Grafana/Superset)
-- [ ] Real-time alerting (Slack/Email)
-- [ ] Unit & integration tests
-- [ ] CI/CD pipeline (GitHub Actions)
-- [ ] Kubernetes deployment
-- [ ] Advanced monitoring (Prometheus/Grafana)
-
-## 🔐 Production Checklist
-
-- [ ] Enable AWS IAM roles
-- [ ] Configure SSL for PostgreSQL
-- [ ] Setup VPN/Firewall rules
-- [ ] Enable Prometheus monitoring
-- [ ] Configure alerting
-- [ ] Set up backup strategy
-- [ ] Load testing (1000+ req/s)
-- [ ] Security audit
-- [ ] Documentation review
-- [ ] Team training
+- [ ] Real TCMB EVDS API integration (when access available)
+- [ ] AWS RDS production deployment + S3 data lake
+- [ ] Grafana/Superset dashboard
+- [ ] ML-based exchange rate forecasting (LSTM)
 
 ## 📝 License
 
@@ -288,16 +278,4 @@ MIT License - See LICENSE file for details
 - Email: mustafaaygunds@gmail.com
 - Title: Data Engineer
 
-## 📞 Support
 
-For questions or issues:
-1. Check existing GitHub issues
-2. Create new issue with detailed description
-3. Contact: mustafaaygunds@gmail.com
-
----
-
-**Status:** Production Ready ✅
-**Last Updated:** 2026-04-10
-**Version:** 1.0.0
-**Quality Score:** 100.0%
