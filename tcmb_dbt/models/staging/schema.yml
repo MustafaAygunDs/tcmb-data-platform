@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_exchange_rates
+    description: "Temizlenmiş ve yeniden adlandırılmış ham döviz kuru verisi"
+    columns:
+      - name: id
+        tests:
+          - not_null
+      - name: rate_date
+        tests:
+          - not_null
+      - name: series_code
+        tests:
+          - not_null
+      - name: rate_value
+        tests:
+          - not_null

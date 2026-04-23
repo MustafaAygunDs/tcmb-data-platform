@@ -17,14 +17,14 @@ def get_db_connection():
     rds_db = os.getenv('RDS_DB', 'tcmb_dev')
     
     connection_string = f"postgresql://{rds_user}:{rds_password}@{rds_host}:{rds_port}/{rds_db}"
-    engine = create_engine(connection_string)
+    engine = create_engine(connection_string, future=True)
     return engine
 
 def create_schema(engine):
     """Create database schema"""
     print("[LOAD] Creating schema...")
     
-    with engine.connect() as conn:
+    with engine.begin() as conn:
         # Staging
         conn.execute(text("""
             CREATE TABLE IF NOT EXISTS staging.stg_exchange_rates (
@@ -71,18 +71,25 @@ def create_schema(engine):
             )
         """))
         
-        conn.commit()
-    
     print("[SUCCESS] Schema created")
 
 def load_to_staging(engine, df: pd.DataFrame, table_name: str = "stg_exchange_rates"):
     """Load data to staging layer"""
     print(f"[LOAD] Loading {len(df)} records to staging...")
-    
+
     try:
-        df.to_sql(
+        df = df.rename(columns={
+            'Tarih': 'tarih',
+            'UNVAN': 'unvan',
+            'Değer': 'deger',
+            'SMA_7': 'sma_7',
+            'Volatility_7': 'volatility_7',
+        })
+        insert_cols = [c for c in ['tarih', 'unvan', 'deger', 'sma_7', 'volatility_7'] if c in df.columns]
+        conn_url = engine.url.render_as_string(hide_password=False)
+        df[insert_cols].to_sql(
             table_name,
-            engine,
+            conn_url,
             schema='staging',
             if_exists='append',
             index=False

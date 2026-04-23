@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Tarih boyutu — stg_exchange_rates'deki tüm tarihlerden türetilmiş"
+    columns:
+      - name: date_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_series
+    description: "Seri boyutu — TCMB seri kodları"
+    columns:
+      - name: series_id
+        tests:
+          - unique
+          - not_null
+      - name: series_code
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_exchange_rates
+    description: "Döviz kuru olgu tablosu — günlük değişim ve teknik göstergeler"
+    columns:
+      - name: fact_id
+        tests:
+          - unique
+          - not_null
+      - name: date_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_id
+      - name: series_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_series')
+                field: series_id
+      - name: rate
+        tests:
+          - not_null

@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: staging
+    schema: staging
+    description: "Python ETL tarafından yüklenen ham TCMB verisi"
+    tables:
+      - name: stg_exchange_rates
+        description: "TCMB API'den çekilen ham döviz kuru verileri"
+        columns:
+          - name: id
+            description: "Birincil anahtar"
+          - name: tarih
+            description: "Kur tarihi"
+          - name: unvan
+            description: "Seri kodu (ör: TP.DK.USD.S)"
+          - name: deger
+            description: "Günlük kur değeri"
+          - name: sma_7
+            description: "7 günlük hareketli ortalama"
+          - name: volatility_7
+            description: "7 günlük volatilite (standart sapma)"
+          - name: created_at
+            description: "Kayıt oluşturma zamanı"
